@@ -1,0 +1,40 @@
+@import 'tailwindcss';
+/* @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-gov.min.css'); */
+
+@font-face {
+  font-family: "Pretendard GOV Variable";
+  src: url("/font/PretendardGOVVariable.ttf") format("truetype");
+  font-weight: 30 920;
+  font-style: normal;
+}
+
+* {
+  font-family: 'Pretendard GOV Variable', sans-serif;
+  letter-spacing: -0.05em;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  height: 30px;
+  padding: 7px;
+  background-color: rgb(235, 235, 235) !important;
+  font-weight: normal;
+  text-align: center;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none; /* Firefox */
+}

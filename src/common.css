@@ -1,0 +1,139 @@
+body{margin:0; background:#ccc; color:#fff; font-family:Arial,Helvetica,sans-serif;}
+.aq-header{display:flex; align-items:center; justify-content:space-between; gap:16px; background:#001d35; padding:10px 50px; height:80px;}
+.aq-title{font-family:'TMONBlack'; font-size:40px;}
+.aq-time{font-family:"Inter light"; font-size:20px; background-color:#000; padding:10px 30px;}
+.aq-options{font-family:"Inter light"; font-size:20px; margin-left:auto;}
+.aq-options .aq-radio{padding-right:20px;}
+
+/* GRID: 위 빈칸은 아래 카드가 메우도록 dense */
+.aq-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));
+  padding:40px;
+  justify-content:center;
+  grid-auto-flow:row dense;  /* 빈칸 메우기 */
+}
+
+/* 일반카드 공통 */
+.aq-card{background:#fff; color:#000; border-radius:10px; padding:5px; box-shadow:0 0 4px rgba(0,0,0,.5); margin:30px 15px 2px 15px; outline: 1px solid #a2b1be;}
+.aq-card__head{background:#1a3a55; font-family:"Inter light"; font-size:22px; color:#fff; font-weight:700; border-radius:7px 7px 0 0; height:50px; line-height:50px; text-align:center;}
+.aq-card__date{background:#e7ebee; font-family:"Inter Medium"; font-size:16px; color:#333; height:35px; line-height:35px; text-align:center;}
+.aq-card__value{font-family:"Inter Medium"; font-size:34px; font-weight:800; height:90px; line-height:90px; padding-right:10px; text-align:right;}
+.aq-card__unit{font-family:"Inter light"; font-size:14px; color:#333; margin-left:4px;}
+
+/* 그룹카드 */
+.gr-card{background:#fff; color:#000; border-radius:10px; padding:0; box-shadow:0 0 4px rgba(0,0,0,.5); margin:30px 15px 2px 15px; outline: 1px solid #aa9fb9;}
+.gr-card__head{position:relative; display: flex; justify-content: center; align-items:center; background:#341a55; font-family:"Inter light"; font-size:22px; color:#fff; font-weight:700; border-radius:9px 9px 0 0; height:55px; padding: 0 16px; }
+.gr-card__group{position: absolute; right: 16px; display: flex; align-items: center; gap: 6px; font-size: 14px; }
+.gr-card__arrow{font-size: 14px;}
+.gr-card__date{background:#ede9f2;font-family:"Inter Medium";font-size:16px; color:#333; height:35px; line-height:35px; text-align: center;}
+.gr-card__value{font-family:"Inter Medium"; font-size:36px; font-weight:800; height:90px; line-height:90px; padding-right:10px; text-align: right;}
+.gr-card__unit{font-family:"Inter light";font-size:14px;color:#333;margin-left:4px;}
+.gr-card--clickable{cursor:pointer}
+
+/* 그룹카드 하위물질 카드 */
+.sgr-card{background:#fff; color:#000; border-radius:10px; padding:5px; box-shadow:0 0 4px rgba(0,0,0,.5); outline: 1px solid #cfc8d7;}
+.sgr-card__head{background:#5f4185; font-family:"Inter light"; font-size:22px; color:#fff; font-weight:700; border-radius:7px 7px 0 0; height:50px; line-height:50px; text-align:center;}
+.sgr-card__date{background:#ede9f2; font-family:"Inter Medium"; font-size:16px; color:#333; height:35px; line-height:35px; text-align:center;}
+.sgr-card__value{font-family:"Inter Medium"; font-size:36px; font-weight:800; height:75px; line-height:75px; padding-right:30px; text-align:right;}
+.sgr-card__unit{font-family:"Inter light"; font-size:14px; color:#333; margin-left:4px;}
+
+
+/* GROUP 슬라이드 박스: 전체 가로폭(한 줄) */
+.gr-expand{
+  grid-column:1 / -1;       /* 가로 100% */
+  overflow:hidden;
+  max-height:0;
+  opacity:0;
+  transform:translateY(-8px);
+  transition:max-height .35s ease, opacity .25s ease, transform .35s ease;
+  background:#300e5b;
+  border-radius:5px;
+  outline:10px solid #300e5b;
+  box-shadow:0 15px 5px gray;
+  }
+.gr-expand.gr-open{
+  opacity:1;
+  transform:translateY(0);
+  padding:16px 16px;
+  }
+.gr-expand__inner{
+  display:grid;
+  grid-template-columns:repeat(auto-fill, 300px);
+  gap:20px;
+  }
+
+ /* 전환(기본 상태) */
+#gr-group,
+#gr-group .gr-card__date,
+#gr-group .gr-card__value b,
+#gr-group .gr-card__value .gr-card__unit {
+  transition: background-color .25s ease, color .25s ease;
+}
+
+/* 열림 상태 카드 (.gr-open 또는 aria-expanded="true") */
+#gr-group.gr-open{ 
+  outline: none; 
+  border: 1px solid #341a55;   /* 필요 시 색상 조정 */
+  color: #cf96ff;
+}
+#gr-group[aria-expanded="true"] {
+  background: #300e5b;   /* 진한 보라 */
+  color: #cf96ff;
+  border-radius: 10px;
+}
+
+/* 날짜 박스 */
+#gr-group.gr-open .gr-card__date,
+#gr-group[aria-expanded="true"] .gr-card__date {
+  background: #291146;
+  color: #d6d1dd;
+}
+
+/* 농도값 / 단위 색상: */
+#gr-group.gr-open .gr-card__value b,
+#gr-group[aria-expanded="true"] .gr-card__value b {
+  color: #ffffff;
+}
+#gr-group.gr-open .gr-card__value .gr-card__unit,
+#gr-group[aria-expanded="true"] .gr-card__value .gr-card__unit {
+  color: #d9cce9;
+}
+
+/* 화살표 아이콘 전환 */
+#gr-group .gr-card__arrow { transition: transform .25s ease, color .25s ease; }
+#gr-group.gr-open .gr-card__arrow,
+#gr-group[aria-expanded="true"] .gr-card__arrow {
+  transform: rotate(180deg);
+  color: #cf96ff;
+}
+
+/* 사이트 버튼 */
+.site-btns-container {
+  display: flex;
+  overflow-x: auto;
+}
+.site-btn {
+  color: #001d35;
+  border: 1px solid white;
+  border-radius: 5px;
+  padding: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 90px;
+  text-align: center;
+}
+.site-btn.active {
+  background-color: #001d35;
+  color: white;
+  border-bottom: 1px solid #001d35
+}
+.site-btn:hover {
+  color: white;
+  background-color: #001d35;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.site-btn:active {
+  transform: scale(0.98);
+}

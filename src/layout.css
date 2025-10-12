@@ -1,0 +1,942 @@
+/* 상하좌우 정중앙 정렬하기: display:flex; justify-content:center; align-items:center; */
+/* 부모 요소 안의 가로폭을 넘어가더라도 자동으로 줄바꿈 적용 안함: white-space: nowrap; */
+/* box의 크기가 border나 padding을 추가해도 고정됨 : box-sizing: border-box; */
+/* line-height를 이용한 텍스트 세로 정렬 https://m.blog.naver.com/0uptopclass/223046146361 */
+
+/* @charset "utf-8"; */
+
+#wrap {
+  width: 100%;
+  height: 100%;
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+/* 공통-헤더 */
+#header {
+  width: 100%;
+  height: 80px;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+#header ul.nav {
+  width: 1260px;
+  text-align: left;
+  white-space: nowrap;
+}
+#header ul.nav li.logo {
+  float: left;
+}
+#header ul.nav li.menu {
+  font-family: Inter;
+  color: #fff;
+  font-size: 1.3rem;
+  font-weight: normal;
+  margin-left: 80px;
+  display: inline;
+  float: right;
+}
+#header ul li a {
+  color: #fff;
+  font-size: 1.3rem;
+}
+#header ul li a:hover {
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+/* 스크롤 헤더 이벤트 클래스*/
+.active {
+  background-color: #000;
+  transition-duration: 0.8s;
+  transition-timing-function: ease;
+
+  -webkit-transition-duration: 0.7s;
+  -webkit-transition-timing-function: ease;
+}
+
+.deactive {
+  background-color: transparent;
+  transition-duration: 0.8s;
+  transition-timing-function: ease;
+
+  -webkit-transition-duration: 0.7s;
+  -webkit-transition-timing-function: ease;
+}
+
+/* 공통-서브메뉴 */
+#submenu {
+  width: 100%;
+  height: 121px;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+#submenu ul {
+  width: 1280px;
+  height: 60px;
+  text-align: center;
+}
+#submenu ul li {
+  width: auto;
+  height: 100%;
+  color: #333;
+  font-size: 22px;
+  line-height: 60px;
+  border-left: 1px solid #ccc;
+  padding: 0px 100px;
+  display: inline-block;
+}
+#submenu ul li:last-child {
+  border-right: 1px solid #ccc;
+}
+#submenu ul img {
+  margin-right: 15px;
+}
+#submenu ul li a {
+  color: #000;
+  font-size: 24px;
+}
+#submenu ul li a:hover {
+  color: #244c83;
+  font-size: 24px;
+}
+
+/* 서브메뉴 스크롤 고정 이벤 클래스*/
+.fix {
+  position: fixed;
+}
+.show {
+  display: block;
+  background-color: #fff;
+} /* 메뉴바가 고정되면서 색상 */
+.noshow {
+  display: none;
+}
+
+/* 컨텐츠 공통 */
+#contents {
+  width: 100%;
+  vertical-align: top;
+  float: left;
+  box-sizing: border-box;
+}
+
+/* ------------------------------------------------------------------------------------ */
+
+/* 인덱스(요약) */
+div.visual {
+  height: 800px;
+  background-color: #2e5746;
+  padding-top: 80px;
+  display: flex;
+  justify-content: center;
+}
+div.visual div.box {
+  width: 1280px;
+  height: 720px;
+  padding-top: 160px;
+  background: url(../images/int_1_bg.png) no-repeat 0 0;
+  background-position: center;
+}
+div.visual div.box p.mcopy {
+  color: #f4bf34;
+  letter-spacing: 0px;
+  padding-bottom: 30px;
+  text-align: left;
+}
+div.visual div.box p.scopy {
+  font-family: 'Courier New';
+  font-size: 1.75em;
+  color: #fff;
+  letter-spacing: 0px;
+  margin-bottom: 200px;
+  text-align: left;
+}
+div.visual div.box p.text {
+  font-size: 18px;
+  color: #fff;
+  letter-spacing: 0px;
+  line-height: 180%;
+  text-align: left;
+}
+
+/* 인덱스(배출량분석) */
+div.con1 {
+  height: 795px;
+  background: url(../images/int_2_bg.png) no-repeat 0 0;
+  background-position: center center;
+}
+div.con1 div.box {
+  width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+  padding-top: 105px;
+}
+div.con1 div.box div.sboxl {
+  width: 440px;
+  float: left;
+}
+div.con1 div.box div.sboxr {
+  width: auto;
+  float: right;
+}
+div.con1 div.box .stit {
+  color: #000;
+  padding-top: 15px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+div.con1 div.box .mtit {
+  color: #3a89ff;
+  line-height: 120%;
+  margin-bottom: 70px;
+  text-align: left;
+}
+div.con1 div.box .text {
+  font-size: 22px;
+  line-height: 42px;
+  letter-spacing: -1px;
+  padding-right: 40px;
+  text-align: left;
+  display: inline-block;
+}
+
+/* 인덱스(배출량제어관리) */
+div.con2 {
+  height: 800px;
+  padding-top: 100px;
+  background: url(../images/int_3_bg.png) no-repeat 0 0;
+  background-position: center;
+  background-color: #244c83;
+}
+div.con2 div.box {
+  width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+}
+div.con2 div.box div.sboxl {
+  width: auto;
+  float: left;
+}
+div.con2 div.box div.sboxr {
+  width: 500px;
+  float: right;
+}
+div.con2 div.box .stit {
+  color: #7fd0fe;
+  padding-top: 15px;
+  margin-bottom: 20px;
+  text-align: right;
+}
+div.con2 div.box .mtit {
+  color: #fff;
+  line-height: 120%;
+  margin-bottom: 80px;
+  text-align: right;
+}
+div.con2 div.box .text {
+  color: #7fd0fe;
+  font-size: 22px;
+  line-height: 52px;
+  letter-spacing: -1px;
+  text-align: right;
+}
+
+/* 인덱스(모델링영역) */
+div.con3 {
+  height: 977px;
+  padding-top: 90px;
+  background: url(../images/int_4_bg.png) no-repeat 0 0;
+  background-size: auto;
+  background-position: center center;
+}
+div.con3 div.box {
+  width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+}
+div.con3 div.box div.sbox {
+  width: auto;
+  float: left;
+}
+div.con3 div.box .mtit {
+  color: #3d368f;
+  line-height: 100%;
+  margin-bottom: 20px;
+  text-align: left;
+}
+div.con3 div.box .text {
+  font-size: 30px;
+  color: #000;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: left;
+}
+div.con3 div.box div.bbox {
+  width: 100%;
+  height: calc(100% - 99px);
+  height: -webkit-calc(100% - 99px);
+  padding: 540px 40px 0px 40px;
+  float: left;
+}
+div.con3 div.box div.bbox div.left {
+  width: 347px;
+  height: 171px;
+  padding: 58px 0px 0px 41px;
+  float: left;
+  background: url(../images/int_4_img_tip1.png) no-repeat 0 0;
+  background-position: center center;
+}
+div.con3 div.box div.bbox div.right {
+  width: 347px;
+  height: 171px;
+  padding: 70px 0px 0px 41px;
+  float: right;
+  background: url(../images/int_4_img_tip2.png) no-repeat 0 0;
+  background-position: center center;
+}
+div.con3 div.box div.bbox p.mtext {
+  font-size: 20px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+div.con3 div.box div.bbox p.text {
+  color: #333;
+  font-size: 16px;
+  line-height: 26px;
+  letter-spacing: -1px;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+/* 인덱스(모델링분석) */
+div.con4 {
+  height: 900px;
+  padding-top: 130px;
+  background: url(../images/int_5_bg.png) no-repeat 0 0;
+  background-position: center center;
+  background-color: #483768;
+}
+div.con4 div.box {
+  width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+}
+div.con4 div.box .mtit {
+  width: 500px;
+  color: #fff;
+  line-height: 100%;
+  text-align: left;
+  float: left;
+}
+div.con4 div.box .text {
+  width: auto;
+  color: #fff;
+  font-size: 22px;
+  line-height: 40px;
+  padding: 5px 0px 0px 200px;
+  text-align: left;
+  float: left;
+}
+
+/* ------------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------------ */
+
+/* 게시판(비주얼) */
+div.subtop1 {
+  width: 100%;
+  height: 400px;
+  background-color: #244c83;
+  padding-top: 80px;
+}
+div.subtop1 div.box {
+  width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 140px 0px 0px 450px;
+  background: url(../images/com_top_bg.png) no-repeat 0 0;
+}
+div.subtop1 div.box p.mcopy {
+  color: #fff;
+  letter-spacing: 10px;
+  text-align: left;
+}
+
+/* 게시판(타이틀-공통) */
+div.board {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+div.board ul {
+  width: 1280px;
+  height: 100%;
+  background-color: #fff;
+}
+div.board ul li {
+  display: inline-block;
+  padding-top: 30px;
+}
+div.board ul li.img {
+  margin-right: 20px;
+}
+div.board ul li.title {
+  color: #000;
+  font-size: 40px;
+  margin-right: 10px;
+}
+div.board ul li.comment {
+  color: #666;
+  font-size: 20px;
+}
+
+/* 게시판(검색-공통) */
+div.searchbox {
+  width: 1280px;
+  height: 60px;
+  margin: 0 auto;
+}
+div.searchbox div.btn {
+  width: auto;
+  height: 50px;
+}
+div.search {
+  width: 500px;
+  height: 60px;
+  float: right;
+}
+div.search ul {
+  width: auto;
+  height: 40px;
+  float: right;
+}
+div.search ul li {
+  display: inline-block;
+}
+div.search ul li.inputbox {
+  width: auto;
+  border-bottom: 2px solid #000;
+}
+div.search ul li input {
+  width: 250px;
+  height: 40px;
+  color: #999;
+  font-size: 18px;
+  margin: 0 10px;
+  padding: 0 15px;
+  border: none;
+}
+
+/* 게시판(페이징-공통) */
+div.paging {
+  width: 1280px;
+  height: 50px;
+  margin: 0 auto;
+  text-align: center;
+  padding-bottom: 150px;
+}
+div.paging ul li {
+  font-size: 18px;
+  padding-top: 20px;
+  margin: 0px 15px;
+  display: inline-block;
+}
+div.paging ul li.img {
+  padding-bottom: 3px;
+}
+
+/* 게시판(버튼박스-공통) */
+div.btnbox {
+  width: 1280px;
+  height: 80px;
+  margin: 0 auto;
+  padding-top: 20px;
+}
+
+/* 게시판(탭메뉴박스-공통) */
+div.tab {
+  width: 1280px;
+  height: 80px;
+  margin: 0 auto;
+  padding-top: 10px;
+}
+
+/* 게시판(목록-공통) */
+div.boardlist {
+  width: 1280px;
+  height: auto;
+  margin: 0 auto;
+  padding-bottom: 10px;
+}
+div.boardlist table {
+  width: 100%;
+  height: auto;
+  background-color: #f5f5f5;
+}
+div.boardlist table tbody {
+  width: 100%;
+}
+div.boardlist table tr {
+  height: 70px;
+  border-bottom: 10px solid #fff;
+}
+div.boardlist table tr:hover {
+  background-color: #e2ebf7;
+  cursor: pointer;
+}
+div.boardlist table tr th {
+  color: #000;
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+/* 게시판(읽기-공통) */
+div.boardview {
+  width: 1280px;
+  height: auto;
+  padding: 50px 0 100px 0;
+  margin: 0 auto;
+}
+div.boardview div.question {
+  width: 100%;
+}
+div.boardview div.question ul.tittle {
+  height: 70px;
+  background-color: #244c83;
+}
+div.boardview div.question ul.tittle li {
+  color: #fff;
+  font-size: 24px;
+  padding: 25px 0 0 30px;
+  text-align: left;
+}
+div.boardview div.question ul.name {
+  height: 50px;
+  background-color: #fff;
+  padding-left: 20px;
+}
+div.boardview div.question ul.name li {
+  color: #000;
+  font-size: 16px;
+  padding: 15px 10px 0 10px;
+  text-align: left;
+  display: inline-block;
+}
+div.boardview div.content {
+  width: 100%;
+  height: auto;
+  color: #000;
+  font-size: 18px;
+  line-height: 35px;
+  margin: 0 auto;
+  padding: 50px;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  min-height: 400px;
+}
+
+/* 게시판(글쓰기-공통) */
+div.boardwrite {
+  width: 1280px;
+  height: auto;
+  margin: 0 auto;
+  padding: 0 0 100px 0;
+  border-top: 2px solid #000;
+}
+div.boardwrite ul {
+  width: 100%;
+  height: 70px;
+  border-bottom: 1px solid #999;
+}
+div.boardwrite ul.textarea {
+  width: 100%;
+  height: 600px;
+}
+div.boardwrite ul li {
+  font-family: 'S-CoreDream-4Regular';
+  color: #000;
+  font-size: 18px;
+  display: inline-block;
+}
+div.boardwrite ul li.item {
+  width: 100px;
+  padding-top: 25px;
+  text-align: center;
+}
+div.boardwrite ul li.input {
+  width: 90%;
+}
+div.boardwrite ul li.area {
+  width: 90%;
+  height: 100%;
+  padding: 20px 0;
+}
+div.boardwrite ul li.file {
+  width: auto;
+}
+div.boardwrite div.center {
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------------------------ */
+
+/* 새소식(목록) */
+div.boardlist table tr th.news1 {
+  width: 150px;
+  text-align: center;
+}
+div.boardlist table tr th.news2 {
+  width: 100%;
+  text-align: left;
+}
+div.boardlist table tr th.news3 {
+  width: 220px;
+  text-align: center;
+}
+
+/* 새소식(읽기) */
+
+/* ------------------------------------------------------------------------------------ */
+
+/* 자주하는 질문 */
+div.faq {
+  width: 1280px;
+  height: 500px;
+  margin: 0 auto;
+  padding-bottom: 10px;
+  border-top: 2px solid #000;
+}
+div.faq ul {
+  width: 100%;
+  height: 80px;
+  border-bottom: 1px solid #999;
+  padding-top: 22px;
+}
+div.faq ul:hover {
+  background-color: #e2ebf7;
+}
+div.faq ul.answer {
+  height: auto;
+  font-size: 18px;
+  line-height: 35px;
+  background-color: #f5f5f5;
+  padding: 40px;
+}
+div.faq ul li {
+  display: inline-block;
+}
+div.faq ul li.group {
+  width: 150px;
+  text-align: center;
+  color: #666;
+  font-size: 20px;
+}
+div.faq ul li.question {
+  width: 1040px;
+  color: #000;
+  font-size: 20px;
+  font-weight: bold;
+}
+div.faq ul li.icon {
+  width: 80px;
+  text-align: center;
+}
+
+/* ------------------------------------------------------------------------------------ */
+
+/* 묻고 답하기(목록) */
+div.boardlist table tr th.qna1 {
+  width: 100%;
+  text-align: left;
+  padding-left: 30px;
+}
+div.boardlist table tr th.qna2 {
+  width: 150px;
+  text-align: center;
+}
+div.boardlist table tr th.qna3 {
+  width: 180px;
+  text-align: center;
+}
+div.boardlist table tr th.qna4 {
+  width: 130px;
+  text-align: center;
+}
+div.boardlist table tr th.qna4.qnared {
+  font-family: 'S-CoreDream-4Regular';
+  color: #ff0000;
+}
+
+/* 묻고 답하기(읽기) */
+
+/* 묻고 답하기(읽기+답변) */
+div.answer {
+  width: 100%;
+  height: auto;
+  color: #1a4074;
+  margin-top: 2px;
+  border: 2px solid #96b0d5;
+}
+div.answer ul.aname {
+  height: 50px;
+  background-color: #dbe2ec;
+  padding-left: 20px;
+}
+div.answer ul.aname li {
+  display: inline-block;
+}
+div.answer ul.aname li.text {
+  color: #1a4074;
+  font-size: 16px;
+  padding: 15px 10px 0 10px;
+  text-align: left;
+}
+div.answer ul.aname li.btn {
+  float: right;
+  padding: 5px 5px 0 0px;
+}
+div.answer div.cont {
+  width: 100%;
+  height: auto;
+  color: #000;
+  font-size: 18px;
+  line-height: 35px;
+  padding: 50px;
+  min-height: 200px;
+}
+
+/* 묻고 답하기(글쓰기) */
+
+/* 묻고 답하기(답변쓰기) */
+div.writecontent {
+  width: 100%;
+  height: auto;
+  color: #000;
+  font-size: 18px;
+  line-height: 35px;
+  padding: 50px;
+  border-top: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+} /* 질문 내용 영역 */
+
+div.rewrite {
+  width: 1280px;
+  height: auto;
+  margin: 0 auto;
+  border-top: 2px solid #96b0d5;
+}
+div.rewrite ul {
+  width: 100%;
+  height: 50px;
+  border-bottom: 1px solid #999;
+}
+div.rewrite ul.textarea {
+  width: 100%;
+  height: 400px;
+}
+div.rewrite ul li {
+  font-family: 'S-CoreDream-4Regular';
+  color: #000;
+  font-size: 18px;
+  display: inline-block;
+}
+div.rewrite ul li.item {
+  width: 100px;
+  padding-top: 25px;
+  text-align: center;
+}
+div.rewrite ul li.input {
+  width: 90%;
+}
+div.rewrite ul li.area {
+  width: 100%;
+  height: 100%;
+}
+div.rewrite ul li.file {
+  width: auto;
+}
+div.rewrite ul li.title {
+  width: 100%;
+  height: 100%;
+  color: #1a4074;
+  font-size: 20px;
+  background-color: #dbe2ec;
+  text-align: center;
+  padding-top: 15px;
+}
+
+div.center {
+  text-align: center;
+} /* 버튼 가운데 정렬 */
+
+/* ------------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------------ */
+
+/* 다운로드(비쥬얼) */
+div.subtop2 {
+  width: 100%;
+  height: 400px;
+  background-color: #4f3e77;
+  padding-top: 80px;
+  box-sizing: border-box;
+}
+div.subtop2 div.box {
+  width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 140px 0px 0px 450px;
+  box-sizing: border-box;
+  background: url('../images/download_top_bg.png') no-repeat 0 0;
+  background-size: auto;
+}
+div.subtop2 div.box p.mcopy {
+  color: #fff;
+  letter-spacing: 10px;
+  text-align: left;
+}
+
+/* 다운로드(프로그램 다운로드) */
+
+div.programdown {
+  width: 1280px;
+  height: 650px;
+  margin: 70px auto;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  padding: 40px;
+}
+div.programdown div.back {
+  width: 100%;
+  height: 100%;
+  background: url('../images/download_img_program.png') no-repeat 0 0;
+  background-size: auto;
+  box-sizing: border-box;
+}
+div.programdown p.title {
+  font-family: 'Tw Cen MT';
+  font-size: 80px;
+  color: #5c2ccf;
+  margin: 50px 0 50px 30px;
+  height: auto;
+}
+div.programdown p.stit.score6 {
+  margin: 30px 0 120px 30px;
+}
+div.programdown p.text.score4 {
+  margin: 0 0 50px 30px;
+}
+div.programdown p.btn {
+  margin: 0 0 0 30px;
+}
+
+/* 다운로드(매뉴얼 다운로드) */
+
+div.manualdown {
+  width: 1280px;
+  height: 650px;
+  margin: 70px auto;
+  border: 1px solid #ccc;
+  border-radius: 30px;
+  padding: 40px;
+}
+div.manualdown div.back {
+  width: 100%;
+  height: 100%;
+  background: url('../images/download_img_manual.png') no-repeat 0 0;
+  background-size: auto;
+  box-sizing: border-box;
+}
+div.manualdown p.title {
+  font-family: 'Tw Cen MT';
+  font-size: 80px;
+  color: #b91e95;
+  margin: 50px 0 50px 30px;
+  height: auto;
+}
+div.manualdown p.stit.score6 {
+  margin: 30px 0 150px 30px;
+}
+div.manualdown p.text.score4 {
+  margin: 0 0 50px 30px;
+}
+div.manualdown p.btn {
+  margin: 0 0 0 30px;
+}
+
+/* ------------------------------------------------------------------------------------ */
+/* ------------------------------------------------------------------------------------ */
+
+/* 공통-카피라이트 */
+#footer {
+  width: 100%;
+}
+#footer div.partner {
+  width: 100%;
+  height: 120px;
+  background-color: #eaeaea;
+  box-sizing: border-box;
+}
+#footer div.partner div.box {
+  margin: 0 auto;
+  width: 1280px;
+  text-align: left;
+}
+#footer div.partner div.box p.text {
+  font-family: 'S-CoreDream-4Regular';
+  color: #000;
+  font-size: 16px;
+  padding-top: 30px;
+}
+#footer div.partner div.box p.logo {
+  text-align: left;
+  display: inline-block;
+  padding-top: 10px;
+  margin-right: 30px;
+}
+#footer div.partner div.box p.logo p.img {
+  margin-right: 10px;
+}
+#footer div.copy {
+  width: 100%;
+  height: 200px;
+  background-color: #4a4a4a;
+  box-sizing: border-box;
+}
+#footer div.copy div.box {
+  width: 1280px;
+  margin: 0 auto;
+  padding-top: 60px;
+  text-align: center;
+}
+#footer div.copy div.box div.left {
+  width: 96px;
+  float: left;
+}
+#footer div.copy div.box div.right {
+  width: 0 auto;
+  margin-left: 50px;
+  float: left;
+}
+#footer p.address {
+  font-family: 'S-CoreDream-4Regular';
+  font-size: 13px;
+  color: #fff;
+  line-height: 22px;
+  text-align: left;
+}
+#footer p.copy {
+  font-family: 'S-CoreDream-4Regular';
+  font-size: 12px;
+  color: #999f;
+  margin-top: 30px;
+  text-align: left;
+}
