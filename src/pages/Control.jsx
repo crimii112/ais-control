@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { RefreshCw } from 'lucide-react';
 
@@ -12,6 +13,12 @@ import GroupCard from '@/components/ui/group-card';
  */
 function Control() {
   const postMutation = usePostRequest();
+
+  // url 관련
+  const location = useLocation();
+  const navigate = useNavigate();
+  const queryParams = new URLSearchParams(location.search);
+  const sitecdParam = queryParams.get('sitecd');
 
   const [siteList, setSiteList] = useState([]);
   const [selectedSite, setSelectedSite] = useState({});
@@ -38,17 +45,31 @@ function Control() {
   }, []);
 
   useEffect(() => {
-    if(siteList.length > 0) {
-      const firstSite = siteList[0];
-      setSelectedSite(firstSite);
-      getControlData(firstSite.sitecd);
+    if (siteList.length > 0) {
+      const targetSite =
+        siteList.find(site => site.sitecd === Number(sitecdParam)) ||
+        siteList[0];
+
+      setSelectedSite(targetSite);
+      getControlData(targetSite.sitecd);
+
+      if (!sitecdParam) {
+        navigate(`?sitecd=${targetSite.sitecd}`, { replace: true });
+      }
     }
-    
+
     worker.postMessage(300000);
   }, [siteList]);
 
+  const handleClickSiteBtn = site => {
+    setSelectedSite(site);
+    getControlData(site.sitecd);
+
+    navigate(`?sitecd=${site.sitecd}`, { replace: false });
+  };
+
   useEffect(() => {
-    if(selectedSite.sitecd) {
+    if (selectedSite.sitecd) {
       getControlData(selectedSite.sitecd);
     }
     worker.postMessage(300000);
@@ -64,13 +85,13 @@ function Control() {
   const getSiteList = async () => {
     const siteData = await postMutation.mutateAsync({
       url: '/ais/srch/datas.do',
-      data: {page: "intensive/site"}
+      data: { page: 'intensive/site' },
     });
 
     setSiteList(siteData.rstList);
-  }
+  };
 
-  const getControlData = async (sitecd) => {
+  const getControlData = async sitecd => {
     scrollPosition.current = window.scrollY;
 
     const data1Res = await postMutation.mutateAsync({
@@ -103,7 +124,9 @@ function Control() {
   }, [data]);
 
   const handleClickRefresh = () => {
-    window.location.reload();
+    // window.location.reload();
+    setDefaultSeconds(300);
+    setClickedTime(moment());
   };
 
   const handleChangeType = e => {
@@ -124,7 +147,7 @@ function Control() {
     });
   };
 
-  const isOverTwoHours = (mdatetime) => {
+  const isOverTwoHours = mdatetime => {
     const mdatetimeMoment = moment(mdatetime);
     const diff = moment().diff(mdatetimeMoment, 'hours');
     return diff >= 2;
@@ -132,18 +155,17 @@ function Control() {
 
   return (
     <>
-      <div className='site-btns-container'>
+      <div className="site-btns-container">
         {siteList?.map(site => (
-          <button 
-            key={site.sitecd} 
-            value={site.sitecd} 
-            className={`site-btn ${selectedSite?.sitecd === site.sitecd ? 'active' : ''}`}
-            onClick={() => {
-              setSelectedSite(site);
-              getControlData(site.sitecd);
-            }}
+          <button
+            key={site.sitecd}
+            value={site.sitecd}
+            className={`site-btn ${
+              selectedSite?.sitecd === site.sitecd ? 'active' : ''
+            }`}
+            onClick={() => handleClickSiteBtn(site)}
           >
-              {site.site.slice(0, 3)}
+            {site.site.slice(0, 3)}
           </button>
         ))}
       </div>
@@ -151,7 +173,10 @@ function Control() {
       {/* 헤더 */}
       <header className="aq-header">
         <div className="aq-title">
-          {selectedSite.site ? `${selectedSite.site.slice(0,3)} 대기환경연구소 관제` : '대기물질 관제'}</div>
+          {selectedSite.site
+            ? `${selectedSite.site.slice(0, 3)} 대기환경연구소 관제`
+            : '대기물질 관제'}
+        </div>
         <div className="aq-time">
           update{'  '}
           <span id="aq-time">
@@ -197,7 +222,6 @@ function Control() {
 
             // 상세 데이터가 여러 개 → 그룹
             if (d.groupCnt > 1) {
-              
               return (
                 <GroupCard
                   key={d.groupNm + idx}
@@ -217,12 +241,14 @@ function Control() {
                   <div className="aq-card__head">
                     <span>{sd.itemNm}</span>
                   </div>
-                  <div 
+                  <div
                     className="aq-card__date"
                     style={{
                       color: isOverTwoHours(sd.mdatetime) ? 'red' : 'inherit',
                     }}
-                  >{sd.mdatetime}</div>
+                  >
+                    {sd.mdatetime}
+                  </div>
                   <div className="aq-card__value">
                     {sd.conc}{' '}
                     <span className="aq-card__unit">{sd.itemUnit}</span>
@@ -240,12 +266,14 @@ function Control() {
               <div className="aq-card__head">
                 <span>{d.itemNm}</span>
               </div>
-              <div 
+              <div
                 className="aq-card__date"
                 style={{
                   color: isOverTwoHours(d.mdatetime) ? 'red' : 'inherit',
                 }}
-              >{d.mdatetime}</div>
+              >
+                {d.mdatetime}
+              </div>
               <div className="aq-card__value">
                 {d.conc} <span className="aq-card__unit">{d.itemUnit}</span>
               </div>

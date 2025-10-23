@@ -13,7 +13,7 @@ const GroupCard = ({ d, groupSubItems, isOpen, onToggle }) => {
     }
   }, [isOpen, groupSubItems]);
 
-  const isOverTwoHours = (mdatetime) => {
+  const isOverTwoHours = mdatetime => {
     const mdatetimeMoment = moment(mdatetime);
     const diff = moment().diff(mdatetimeMoment, 'hours');
     return diff >= 2;
@@ -31,18 +31,20 @@ const GroupCard = ({ d, groupSubItems, isOpen, onToggle }) => {
         aria-expanded={isOpen}
       >
         <div className="gr-card__head">
-          <span>{d.itemNm}</span>
-          <div className='gr-card__group'>
+          <span className="gr-card__title">{d.itemNm}</span>
+          <div className="gr-card__group">
             <span>{d.groupNm}</span>
             <span className="gr-card__arrow">{isOpen ? '▲' : '▽'}</span>
           </div>
         </div>
-        <div 
+        <div
           className="gr-card__date"
           style={{
             color: isOverTwoHours(d.mdatetime) ? 'red' : 'inherit',
           }}
-        >{d.mdatetime}</div>
+        >
+          {d.mdatetime}
+        </div>
         <div className="gr-card__value">
           {d.conc} <span className="gr-card__unit">{d.itemUnit}</span>
         </div>
@@ -63,12 +65,14 @@ const GroupCard = ({ d, groupSubItems, isOpen, onToggle }) => {
               <div className="sgr-card__head">
                 <span>{sd.itemNm}</span>
               </div>
-              <div 
+              <div
                 className="sgr-card__date"
                 style={{
                   color: isOverTwoHours(sd.mdatetime) ? 'red' : 'inherit',
                 }}
-              >{sd.mdatetime}</div>
+              >
+                {sd.mdatetime}
+              </div>
               <div className="sgr-card__value">
                 {sd.conc} <span className="sgr-card__unit">{sd.itemUnit}</span>
               </div>
