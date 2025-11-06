@@ -1,7 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 
-const GroupCard = ({ d, groupSubItems, isOpen, onToggle }) => {
+const GroupCard = ({
+  d,
+  groupSubItems,
+  isOpen,
+  onToggle,
+  handleClickCardHead,
+}) => {
   const innerRef = useRef(null);
   const [height, setHeight] = useState(0);
 
@@ -60,9 +66,12 @@ const GroupCard = ({ d, groupSubItems, isOpen, onToggle }) => {
         }}
       >
         <div className="gr-expand__inner" ref={innerRef}>
-          {groupSubItems.map((sd, idx) => (
+          {groupSubItems.map(sd => (
             <article key={sd.itemNm} className="sgr-card">
-              <div className="sgr-card__head">
+              <div
+                className="sgr-card__head"
+                onClick={() => handleClickCardHead(sd.itemCd)}
+              >
                 <span>{sd.itemNm}</span>
               </div>
               <div
