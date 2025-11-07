@@ -1,3 +1,4 @@
+import moment from 'moment';
 import {
   CartesianGrid,
   Legend,
@@ -14,6 +15,33 @@ const SimpleTimeSeriesGraph = ({ data }) => {
 
   const firstItem = data[0] || {};
 
+  /* X축 형식 커스텀 */
+  const CustomTick = ({ x, y, payload }) => {
+    const date = moment(
+      payload.value,
+      ['YYYY/MM/DD HH:mm', 'YYYY/MM/DD HH'],
+      true
+    );
+    if (!date.isValid()) return null;
+
+    const dateStr = date.format('YYYY/MM/DD');
+    const timeStr = date.format('HH:mm');
+
+    return (
+      <g transform={`translate(${x},${y + 15})`}>
+        <text textAnchor="middle" fill="#666" fontSize={14}>
+          <tspan x="0" dy="0">
+            {dateStr}
+          </tspan>
+          <tspan x="0" dy="1.2em">
+            {timeStr}
+          </tspan>
+        </text>
+      </g>
+    );
+  };
+
+  /* 툴팁 커스텀 */
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || payload.length === 0) return null;
 
@@ -54,7 +82,7 @@ const SimpleTimeSeriesGraph = ({ data }) => {
         <Legend
           verticalAlign="bottom"
           wrapperStyle={{
-            paddingTop: 40,
+            paddingTop: 60,
             border: 'none',
             outline: 'none',
             backgroundColor: 'transparent',
@@ -69,27 +97,29 @@ const SimpleTimeSeriesGraph = ({ data }) => {
             value: '측정시간',
             position: 'bottom',
             fontWeight: 'bold',
+            dy: 20,
           }}
-          tick={{ fontSize: 12 }}
+          tick={CustomTick}
         />
         <YAxis
           orientation="left"
           type="number"
-          fontSize={12}
+          fontSize={14}
           allowDataOverflow={true}
           tickCount={10}
           domain={['auto', 'auto']}
           label={{
-            value: firstItem.itemNm || '',
+            value: `${firstItem.itemNm}(${firstItem.itemUnit})` || '',
             angle: -90,
             position: 'insideLeft',
             fontWeight: 'bold',
+            dy: 50,
           }}
         />
         <Line
           data={data}
           dataKey="conc"
-          name={`${firstItem.itemNm || ''}`}
+          name={`${firstItem.itemNm}(${firstItem.itemUnit})` || ''}
           stroke={'#003f5c'}
         />
       </LineChart>

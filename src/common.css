@@ -61,6 +61,7 @@ body {
   height: 50px;
   line-height: 50px;
   text-align: center;
+  cursor: pointer;
 }
 .aq-card__date {
   background: #e7ebee;
@@ -172,6 +173,7 @@ body {
   height: 50px;
   line-height: 50px;
   text-align: center;
+  cursor: pointer;
 }
 .sgr-card__date {
   background: #ede9f2;
@@ -301,13 +303,14 @@ body {
 
 /* 그래프 */
 .graph-section {
+  grid-column: 1 / -1;
   background-color: #fff;
   padding: 15px;
   position: relative;
   border-radius: 10px;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
   margin: 20px auto;
-  margin-bottom: -20px;
+  margin-bottom: -10px;
   width: 95%;
 }
 .graph-close-btn {

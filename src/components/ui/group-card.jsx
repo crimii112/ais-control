@@ -70,7 +70,7 @@ const GroupCard = ({
             <article key={sd.itemNm} className="sgr-card">
               <div
                 className="sgr-card__head"
-                onClick={() => handleClickCardHead(sd.itemCd)}
+                onClick={e => handleClickCardHead(e, sd.itemCd)}
               >
                 <span>{sd.itemNm}</span>
               </div>

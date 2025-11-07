@@ -35,6 +35,7 @@ function Control() {
   const [expandedHeights, setExpandedHeights] = useState({});
 
   const [graphData, setGraphData] = useState(null);
+  const [insertIndex, setInsertIndex] = useState(null);
 
   const scrollPosition = useRef(0);
 
@@ -157,7 +158,7 @@ function Control() {
   };
 
   // 카드 헤드 클릭 시 시계열 그래프 표출
-  const handleClickCardHead = async itemcd => {
+  const handleClickCardHead = async (e, itemcd) => {
     const sitecd = selectedSite.sitecd;
 
     const dataRes = await postMutation.mutateAsync({
@@ -170,6 +171,23 @@ function Control() {
       return;
     }
 
+    // 클릭된 카드 요소
+    const card = e.target.closest('.aq-card');
+    if (!card) return;
+
+    // 같은 줄의 카드들과 비교해서 "이 줄의 첫 번째 카드 인덱스" 찾기
+    const grid = document.querySelector('.aq-grid');
+    const cards = Array.from(grid.querySelectorAll('.aq-card, .gr-card'));
+
+    const clickedTop = card.offsetTop;
+
+    // 같은 줄에 있는 카드들 찾기
+    const sameRowCards = cards.filter(c => c.offsetTop === clickedTop);
+    const firstCardOfRow = sameRowCards[0];
+    const rowStartIndex = cards.indexOf(firstCardOfRow);
+
+    // 이 줄 바로 "위"에 그래프를 삽입할 것이므로
+    setInsertIndex(rowStartIndex);
     setGraphData(dataRes.rstList);
   };
 
@@ -234,8 +252,17 @@ function Control() {
       </header>
 
       {/* 시계열 그래프 */}
-      {graphData && graphData.length !== 0 && (
-        <section className="graph-section">
+      {/* {graphData && graphData.length !== 0 && (
+        <section
+          className="graph-section"
+          style={{
+            position: 'absolute',
+            top: graphPosition - 10, // 줄 바로 위에
+            left: 0,
+            right: 0,
+            zIndex: 10,
+          }}
+        >
           <button
             className="graph-close-btn"
             onClick={() => setGraphData(null)}
@@ -244,7 +271,7 @@ function Control() {
           </button>
           <SimpleTimeSeriesGraph data={graphData} />
         </section>
-      )}
+      )} */}
 
       {/* 메인 카드 */}
       <main className="aq-grid" id="grid">
@@ -258,14 +285,31 @@ function Control() {
             // 상세 데이터가 여러 개 → 그룹
             if (d.groupCnt > 1) {
               return (
-                <GroupCard
-                  key={d.groupNm + idx}
-                  d={d}
-                  groupSubItems={groupSubItems}
-                  isOpen={selectedGroup === d.groupNm}
-                  onToggle={toggleGroup}
-                  handleClickCardHead={handleClickCardHead}
-                />
+                <React.Fragment key={d.groupNm + idx}>
+                  {/* 그래프 삽입 위치 */}
+                  {graphData && idx === insertIndex && (
+                    <section className="graph-section">
+                      <button
+                        className="graph-close-btn"
+                        onClick={() => {
+                          setGraphData(null);
+                          setInsertIndex(null);
+                        }}
+                      >
+                        <X />
+                      </button>
+                      <SimpleTimeSeriesGraph data={graphData} />
+                    </section>
+                  )}
+
+                  <GroupCard
+                    d={d}
+                    groupSubItems={groupSubItems}
+                    isOpen={selectedGroup === d.groupNm}
+                    onToggle={toggleGroup}
+                    handleClickCardHead={handleClickCardHead}
+                  />
+                </React.Fragment>
               );
             }
 
@@ -273,26 +317,43 @@ function Control() {
             if (d.groupCnt === 1) {
               const sd = groupSubItems[0];
               return (
-                <article key={sd.itemNm} className="aq-card">
-                  <div
-                    className="aq-card__head"
-                    onClick={() => handleClickCardHead(sd.itemCd)}
-                  >
-                    <span>{sd.itemNm}</span>
-                  </div>
-                  <div
-                    className="aq-card__date"
-                    style={{
-                      color: isOverTwoHours(sd.mdatetime) ? 'red' : 'inherit',
-                    }}
-                  >
-                    {sd.mdatetime}
-                  </div>
-                  <div className="aq-card__value">
-                    {sd.conc}{' '}
-                    <span className="aq-card__unit">{sd.itemUnit}</span>
-                  </div>
-                </article>
+                <React.Fragment key={sd.itemNm}>
+                  {graphData && idx === insertIndex && (
+                    <section className="graph-section">
+                      <button
+                        className="graph-close-btn"
+                        onClick={() => {
+                          setGraphData(null);
+                          setInsertIndex(null);
+                        }}
+                      >
+                        <X />
+                      </button>
+                      <SimpleTimeSeriesGraph data={graphData} />
+                    </section>
+                  )}
+
+                  <article className="aq-card">
+                    <div
+                      className="aq-card__head"
+                      onClick={e => handleClickCardHead(e, sd.itemCd)}
+                    >
+                      <span>{sd.itemNm}</span>
+                    </div>
+                    <div
+                      className="aq-card__date"
+                      style={{
+                        color: isOverTwoHours(sd.mdatetime) ? 'red' : 'inherit',
+                      }}
+                    >
+                      {sd.mdatetime}
+                    </div>
+                    <div className="aq-card__value">
+                      {sd.conc}{' '}
+                      <span className="aq-card__unit">{sd.itemUnit}</span>
+                    </div>
+                  </article>
+                </React.Fragment>
               );
             }
 
