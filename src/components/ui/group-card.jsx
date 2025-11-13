@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import moment from 'moment';
 
 const GroupCard = ({
   d,
   groupSubItems,
   isOpen,
   onToggle,
+  isOverTwoHours,
   handleClickCardHead,
 }) => {
   const innerRef = useRef(null);
@@ -18,12 +18,6 @@ const GroupCard = ({
       setHeight(0);
     }
   }, [isOpen, groupSubItems]);
-
-  const isOverTwoHours = mdatetime => {
-    const mdatetimeMoment = moment(mdatetime);
-    const diff = moment().diff(mdatetimeMoment, 'hours');
-    return diff >= 2;
-  };
 
   return (
     <>

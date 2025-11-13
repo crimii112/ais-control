@@ -38,6 +38,7 @@ function Control() {
   const [insertIndex, setInsertIndex] = useState(null);
 
   const scrollPosition = useRef(0);
+  const selectedItemRef = useRef(null);
 
   const worker = new Worker(
     new URL('../worker/timerWorker.js', import.meta.url),
@@ -86,6 +87,7 @@ function Control() {
     setClickedTime(moment());
   };
 
+  // 측정소 목록 조회
   const getSiteList = async () => {
     const siteData = await postMutation.mutateAsync({
       url: '/ais/srch/datas.do',
@@ -95,6 +97,7 @@ function Control() {
     setSiteList(siteData.rstList);
   };
 
+  // 측정소별 관제 데이터 조회
   const getControlData = async sitecd => {
     scrollPosition.current = window.scrollY;
 
@@ -127,13 +130,19 @@ function Control() {
     });
   }, [data]);
 
+  // 새로고침 클릭 핸들러
   const handleClickRefresh = () => {
     setDefaultSeconds(300);
     setClickedTime(moment());
   };
 
+  // '입경제외' / '입경만' 변경 핸들러
   const handleChangeType = e => {
-    if (e.target.value === '2') setGraphData(null);
+    if (e.target.value === '2') {
+      setGraphData(null);
+      setInsertIndex(null);
+      selectedItemRef.current = null;
+    }
     setType(e.target.value);
   };
 
@@ -151,6 +160,7 @@ function Control() {
     });
   };
 
+  // 2시간 초과 여부 판단
   const isOverTwoHours = mdatetime => {
     const mdatetimeMoment = moment(mdatetime);
     const diff = moment().diff(mdatetimeMoment, 'hours');
@@ -172,24 +182,70 @@ function Control() {
     }
 
     // 클릭된 카드 요소
-    const card = e.target.closest('.aq-card');
-    if (!card) return;
+    let card = e.target.closest('.aq-card');
+    if (card) {
+      // 일반 카드 => 그룹카드 닫기
+      setSelectedGroup(null);
+    } else {
+      // sgr-card 클릭 시 gr-card를 기준으로
+      const sgrCard = e.target.closest('.sgr-card');
+      if (sgrCard) {
+        card = sgrCard.closest('.gr-expand')?.previousElementSibling;
+      }
+    }
 
-    // 같은 줄의 카드들과 비교해서 "이 줄의 첫 번째 카드 인덱스" 찾기
+    // 클릭된 카드 요소 저장 => resize 시 사용
+    selectedItemRef.current = card;
+
+    // 현재 줄의 첫 번째 카드 인덱스 찾기
     const grid = document.querySelector('.aq-grid');
     const cards = Array.from(grid.querySelectorAll('.aq-card, .gr-card'));
 
     const clickedTop = card.offsetTop;
 
     // 같은 줄에 있는 카드들 찾기
-    const sameRowCards = cards.filter(c => c.offsetTop === clickedTop);
+    const sameRowCards = cards.filter(c => {
+      return c.offsetTop === clickedTop;
+    });
     const firstCardOfRow = sameRowCards[0];
     const rowStartIndex = cards.indexOf(firstCardOfRow);
 
-    // 이 줄 바로 "위"에 그래프를 삽입할 것이므로
     setInsertIndex(rowStartIndex);
+
     setGraphData(dataRes.rstList);
   };
+
+  // 창 크기 변경 시 그래프 삽입 위치 재계산
+  useEffect(() => {
+    if (!graphData) return;
+
+    const handleResize = () => {
+      // 클릭된 카드 요소
+      const card = selectedItemRef.current;
+      if (!card) return;
+
+      // 현재 줄의 첫 번째 카드 인덱스 찾기
+      const grid = document.querySelector('.aq-grid');
+      const cards = Array.from(grid.querySelectorAll('.aq-card, .gr-card'));
+
+      const clickedTop = card.offsetTop;
+
+      // 같은 줄에 있는 카드들 찾기
+      const sameRowCards = cards.filter(c => {
+        return c.offsetTop === clickedTop;
+      });
+      const firstCardOfRow = sameRowCards[0];
+      const rowStartIndex = cards.indexOf(firstCardOfRow);
+
+      setInsertIndex(rowStartIndex);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [graphData, insertIndex]);
 
   return (
     <>
@@ -253,16 +309,7 @@ function Control() {
 
       {/* 시계열 그래프 */}
       {/* {graphData && graphData.length !== 0 && (
-        <section
-          className="graph-section"
-          style={{
-            position: 'absolute',
-            top: graphPosition - 10, // 줄 바로 위에
-            left: 0,
-            right: 0,
-            zIndex: 10,
-          }}
-        >
+        <section className="graph-section">
           <button
             className="graph-close-btn"
             onClick={() => setGraphData(null)}
@@ -294,6 +341,7 @@ function Control() {
                         onClick={() => {
                           setGraphData(null);
                           setInsertIndex(null);
+                          selectedItemRef.current = null;
                         }}
                       >
                         <X />
@@ -307,6 +355,7 @@ function Control() {
                     groupSubItems={groupSubItems}
                     isOpen={selectedGroup === d.groupNm}
                     onToggle={toggleGroup}
+                    isOverTwoHours={isOverTwoHours}
                     handleClickCardHead={handleClickCardHead}
                   />
                 </React.Fragment>
@@ -325,6 +374,7 @@ function Control() {
                         onClick={() => {
                           setGraphData(null);
                           setInsertIndex(null);
+                          selectedItemRef.current = null;
                         }}
                       >
                         <X />
