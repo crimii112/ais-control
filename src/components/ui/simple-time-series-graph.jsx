@@ -121,6 +121,7 @@ const SimpleTimeSeriesGraph = ({ data }) => {
           dataKey="conc"
           name={`${firstItem.itemNm}(${firstItem.itemUnit})` || ''}
           stroke={'#003f5c'}
+          strokeWidth={1.5}
         />
       </LineChart>
     </ResponsiveContainer>

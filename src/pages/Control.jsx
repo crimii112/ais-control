@@ -39,6 +39,7 @@ function Control() {
 
   const scrollPosition = useRef(0);
   const selectedItemRef = useRef(null);
+  const graphRef = useRef(null);
 
   const worker = new Worker(
     new URL('../worker/timerWorker.js', import.meta.url),
@@ -247,6 +248,20 @@ function Control() {
     };
   }, [graphData, insertIndex]);
 
+  // 그래프 데이터 변경 시 그래프 위치로 스크롤
+  useEffect(() => {
+    if (graphData && graphRef.current) {
+      setTimeout(() => {
+        const top =
+          graphRef.current.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo({
+          top: top - 20,
+          behavior: 'smooth',
+        });
+      }, 50);
+    }
+  }, [graphData]);
+
   return (
     <>
       <div className="site-btns-container">
@@ -335,7 +350,7 @@ function Control() {
                 <React.Fragment key={d.groupNm + idx}>
                   {/* 그래프 삽입 위치 */}
                   {graphData && idx === insertIndex && (
-                    <section className="graph-section">
+                    <section className="graph-section" ref={graphRef}>
                       <button
                         className="graph-close-btn"
                         onClick={() => {
@@ -368,7 +383,7 @@ function Control() {
               return (
                 <React.Fragment key={sd.itemNm}>
                   {graphData && idx === insertIndex && (
-                    <section className="graph-section">
+                    <section className="graph-section" ref={graphRef}>
                       <button
                         className="graph-close-btn"
                         onClick={() => {
