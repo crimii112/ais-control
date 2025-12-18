@@ -34,6 +34,7 @@ function Control() {
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [expandedHeights, setExpandedHeights] = useState({});
 
+  const [openedItemCd, setOpenedItemCd] = useState(null);
   const [graphData, setGraphData] = useState(null);
   const [insertIndex, setInsertIndex] = useState(null);
 
@@ -77,6 +78,11 @@ function Control() {
   useEffect(() => {
     if (selectedSite.sitecd) {
       getControlData(selectedSite.sitecd);
+
+      // 그래프가 열려있으면 그래프 데이터 가져와야함
+      if (openedItemCd) {
+        getGraphData(selectedSite.sitecd, openedItemCd);
+      }
     }
     worker.postMessage(300000);
 
@@ -133,6 +139,7 @@ function Control() {
 
   // 새로고침 클릭 핸들러
   const handleClickRefresh = () => {
+    console.log('clicked refresh button');
     setDefaultSeconds(300);
     setClickedTime(moment());
   };
@@ -168,10 +175,8 @@ function Control() {
     return diff >= 2;
   };
 
-  // 카드 헤드 클릭 시 시계열 그래프 표출
-  const handleClickCardHead = async (e, itemcd) => {
-    const sitecd = selectedSite.sitecd;
-
+  /* 그래프 데이터 가져오는 함수 */
+  const getGraphData = async (sitecd, itemcd) => {
     const dataRes = await postMutation.mutateAsync({
       url: '/ais/srch/datas.do',
       data: { page: 'iabnrm/selectlast72hour', sitecd: sitecd, itemcd: itemcd },
@@ -181,6 +186,14 @@ function Control() {
       alert('그래프를 그릴 데이터가 없습니다.');
       return;
     }
+
+    setGraphData(dataRes.rstList);
+  };
+
+  /* 카드 헤드 클릭 시 시계열 그래프 표출하는 함수 */
+  const handleClickCardHead = async (e, itemcd) => {
+    setOpenedItemCd(itemcd);
+    await getGraphData(selectedSite.sitecd, itemcd);
 
     // 클릭된 카드 요소
     let card = e.target.closest('.aq-card');
@@ -212,11 +225,9 @@ function Control() {
     const rowStartIndex = cards.indexOf(firstCardOfRow);
 
     setInsertIndex(rowStartIndex);
-
-    setGraphData(dataRes.rstList);
   };
 
-  // 그래프 데이터 변경 시 그래프 위치로 스크롤
+  /* 그래프 데이터 변경 시 그래프 위치로 스크롤 */
   useEffect(() => {
     if (graphData && graphRef.current) {
       setTimeout(() => {
@@ -230,7 +241,7 @@ function Control() {
     }
   }, [graphData]);
 
-  // 창 크기 변경 시 그래프 삽입 위치 재계산, 스크롤 위치 조정
+  /* 창 크기 변경 시 그래프 삽입 위치 재계산, 스크롤 위치 조정 */
   useEffect(() => {
     if (!graphData) return;
 
@@ -365,6 +376,7 @@ function Control() {
                         onClick={() => {
                           setGraphData(null);
                           setInsertIndex(null);
+                          setOpenedItemCd(null);
                           selectedItemRef.current = null;
                         }}
                       >
@@ -398,6 +410,7 @@ function Control() {
                         onClick={() => {
                           setGraphData(null);
                           setInsertIndex(null);
+                          setOpenedItemCd(null);
                           selectedItemRef.current = null;
                         }}
                       >
