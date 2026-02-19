@@ -44,7 +44,7 @@ function Control() {
 
   const worker = new Worker(
     new URL('../worker/timerWorker.js', import.meta.url),
-    { type: 'module' }
+    { type: 'module' },
   );
 
   useEffect(() => {
@@ -110,11 +110,11 @@ function Control() {
 
     const data1Res = await postMutation.mutateAsync({
       url: '/ais/srch/datas.do',
-      data: { page: 'iabnrm/selectlastdata1', sitecd: sitecd },
+      data: { page: 'monitoring/selectlastdata1', sitecd: sitecd },
     });
     const data2Res = await postMutation.mutateAsync({
       url: '/ais/srch/datas.do',
-      data: { page: 'iabnrm/selectlastdata2', sitecd: sitecd },
+      data: { page: 'monitoring/selectlastdata2', sitecd: sitecd },
     });
 
     setData({
@@ -179,7 +179,11 @@ function Control() {
   const getGraphData = async (sitecd, itemcd) => {
     const dataRes = await postMutation.mutateAsync({
       url: '/ais/srch/datas.do',
-      data: { page: 'iabnrm/selectlast72hour', sitecd: sitecd, itemcd: itemcd },
+      data: {
+        page: 'monitoring/selectlast72hour',
+        sitecd: sitecd,
+        itemcd: itemcd,
+      },
     });
 
     if (dataRes.rstList[0] === 'NO DATA') {
@@ -361,7 +365,7 @@ function Control() {
           // type === "1" → 입경제외
           if (type === '1') {
             const groupSubItems = subData.filter(
-              sd => sd.groupNm === d.groupNm
+              sd => sd.groupNm === d.groupNm,
             );
 
             // 상세 데이터가 여러 개 → 그룹
