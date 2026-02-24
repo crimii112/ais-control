@@ -187,6 +187,7 @@ function Control() {
     });
 
     if (dataRes.rstList[0] === 'NO DATA') {
+      setOpenedItemCd(null);
       alert('그래프를 그릴 데이터가 없습니다.');
       return;
     }
